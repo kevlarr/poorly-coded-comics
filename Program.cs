@@ -13,6 +13,12 @@ namespace poorlycoded
 
         static void Main(string[] args)
         {
+            var client = NewClient();
+            XKCD.FetchLatest(client).Wait();
+        }
+
+        static HttpClient NewClient()
+        {
             var client = new HttpClient();
             var headers = client.DefaultRequestHeaders;
 
@@ -22,7 +28,7 @@ namespace poorlycoded
             foreach (string h in Program.headerValues)
                 headers.Accept.Add(new MediaTypeWithQualityHeaderValue(h));
 
-            XKCD.FetchLatest(client).Wait();
+            return client;
         }
     }
 }
