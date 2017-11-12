@@ -10,6 +10,7 @@ Sample JSON response:
 
 using System;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
@@ -17,16 +18,6 @@ namespace poorlycoded
 {
     public class XKCD
     {
-        public class Result
-        {
-            public string alt;
-            public string day;
-            public string month;
-            public int    num;
-            public string title;
-            public string year;
-        }
-
         private static string url = "http://xkcd.com/info.0.json";
 
         public static async Task FetchLatest(HttpClient c)
@@ -35,7 +26,29 @@ namespace poorlycoded
             var streamTask = c.GetStreamAsync(XKCD.url);
             var result = serializer.ReadObject(await streamTask) as Result;
 
-            Console.WriteLine(result.title);
+            Console.WriteLine($"{result.ID}: {result.Title}");
+        }
+
+        [DataContract]
+        private class Result
+        {
+            [DataMember(Name="day")]
+            public string Day { get; set; }
+
+            [DataMember(Name="num")]
+            public int ID { get; set; }
+
+            [DataMember(Name="month")]
+            public string Month { get; set; }
+
+            [DataMember(Name="alt")]
+            public string Text { get; set; }
+
+            [DataMember(Name="title")]
+            public string Title { get; set; }
+
+            [DataMember(Name="year")]
+            public string Year { get; set; }
         }
     }
 }
