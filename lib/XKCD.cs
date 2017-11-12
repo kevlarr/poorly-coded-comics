@@ -20,17 +20,15 @@ namespace poorlycoded
     {
         private static string url = "http://xkcd.com/info.0.json";
 
-        public static async Task FetchLatest(HttpClient c)
+        public static async Task<Processed> FetchLatest(HttpClient c)
         {
-            var serializer = new DataContractJsonSerializer(typeof(Result));
+            var serializer = new DataContractJsonSerializer(typeof(Processed));
             var streamTask = c.GetStreamAsync(XKCD.url);
-            var result = serializer.ReadObject(await streamTask) as Result;
-
-            Console.WriteLine($"{result.ID}: {result.Title}");
+            return serializer.ReadObject(await streamTask) as Processed;
         }
 
         [DataContract]
-        private class Result
+        public class Processed
         {
             [DataMember(Name="day")]
             public string Day { get; set; }

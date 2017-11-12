@@ -14,7 +14,10 @@ namespace poorlycoded
         static void Main(string[] args)
         {
             var client = NewClient();
-            XKCD.FetchLatest(client).Wait();
+
+            Console.WriteLine("Fetching XKCD...");
+            var result = XKCD.FetchLatest(client).Result;
+            Console.WriteLine($"{result.ID}: {result.Title}");
         }
 
         static HttpClient NewClient()
