@@ -13,16 +13,15 @@ namespace poorlycoded
 
         static void Main(string[] args)
         {
-            // TODO: Only xkcd needs client
             var client = NewClient();
 
             Console.WriteLine("\nFetching XKCD...");
-            var xkcd = XKCD.FetchLatest(client).Result;
+            Comic xkcd = XKCD.FetchLatest(client).Result;
             Console.WriteLine(
                 $"{xkcd.Id}: {xkcd.Title} <{xkcd.Link}> @ {xkcd.Published}");
 
             Console.WriteLine("\nFetching Poorly Drawn Lines...");
-            var pdl = PDL.FetchLatest().Result;
+            Comic pdl = PDL.FetchLatest().Result;
             Console.WriteLine(
                 $"{pdl.Id}: {pdl.Title} <{pdl.Link}> @ {pdl.Published}");
         }
@@ -37,7 +36,6 @@ namespace poorlycoded
             headers.Accept.Clear();
             foreach (string h in Program.headerValues)
                 headers.Accept.Add(new MediaTypeWithQualityHeaderValue(h));
-
             return client;
         }
     }
