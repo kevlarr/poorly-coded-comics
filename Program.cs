@@ -16,8 +16,16 @@ namespace poorlycoded
             var client = NewClient();
 
             Console.WriteLine("Fetching XKCD...");
-            var result = XKCD.FetchLatest(client).Result;
-            Console.WriteLine($"{result.ID}: {result.Title}");
+            var xkcd = XKCD.FetchLatest(client).Result;
+            Console.WriteLine($"{xkcd.ID}: {xkcd.Title}");
+
+            Console.WriteLine("Fetching Poorly Drawn Lines...");
+            var pdl = PDL.FetchLatest().Result;
+
+            Console.WriteLine(pdl.Title);
+            Console.WriteLine(pdl.Href);
+            Console.WriteLine(pdl.Published);
+            Console.WriteLine(pdl.ID);
         }
 
         static HttpClient NewClient()

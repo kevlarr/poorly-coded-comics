@@ -1,5 +1,6 @@
 /*
 Sample JSON response:
+
 {
     "month": "11", "num": 1914, "link": "", "year": "2017", "news": "",
     "safe_title": "Twitter Verification", "transcript": "",
@@ -18,7 +19,7 @@ namespace poorlycoded
 {
     public class XKCD
     {
-        private static string url = "http://xkcd.com/info.0.json";
+        static string url = "http://xkcd.com/info.0.json";
 
         public static async Task<Processed> FetchLatest(HttpClient c)
         {
