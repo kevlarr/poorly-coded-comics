@@ -21,33 +21,48 @@ namespace poorlycoded
     {
         static string url = "http://xkcd.com/info.0.json";
 
-        public static async Task<Processed> FetchLatest(HttpClient c)
+        public static async Task<Comic> FetchLatest(HttpClient c)
         {
-            var serializer = new DataContractJsonSerializer(typeof(Processed));
+            var serializer = new DataContractJsonSerializer(typeof(Result));
             var streamTask = c.GetStreamAsync(XKCD.url);
-            return serializer.ReadObject(await streamTask) as Processed;
+            var res = serializer.ReadObject(await streamTask) as Result;
+            return new Comic(res.Id, res.Title, "http://xkcd.com", res.Published);
         }
 
         [DataContract]
-        public class Processed
+        private class Result
         {
-            [DataMember(Name="day")]
-            public string Day { get; set; }
-
             [DataMember(Name="num")]
-            public int ID { get; set; }
-
-            [DataMember(Name="month")]
-            public string Month { get; set; }
-
-            [DataMember(Name="alt")]
-            public string Text { get; set; }
+            public int Id { get; set; }
 
             [DataMember(Name="title")]
             public string Title { get; set; }
 
+            [DataMember(Name="day")]
+            public string Day { get; set; }
+
+            [DataMember(Name="month")]
+            public string Month { get; set; }
+
             [DataMember(Name="year")]
             public string Year { get; set; }
+
+            [IgnoreDataMember]
+            public DateTime Published
+            {
+                get
+                {
+                    int year, month, day;
+                    if (
+                        int.TryParse(Year, out year) &&
+                        int.TryParse(Month, out month) &&
+                        int.TryParse(Day, out day)
+                    )
+                        return new DateTime(year, month, day);
+
+                    return DateTime.Today;
+                }
+            }
         }
     }
 }

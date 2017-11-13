@@ -13,19 +13,18 @@ namespace poorlycoded
 
         static void Main(string[] args)
         {
+            // TODO: Only xkcd needs client
             var client = NewClient();
 
-            Console.WriteLine("Fetching XKCD...");
+            Console.WriteLine("\nFetching XKCD...");
             var xkcd = XKCD.FetchLatest(client).Result;
-            Console.WriteLine($"{xkcd.ID}: {xkcd.Title}");
+            Console.WriteLine(
+                $"{xkcd.Id}: {xkcd.Title} <{xkcd.Link}> @ {xkcd.Published}");
 
-            Console.WriteLine("Fetching Poorly Drawn Lines...");
+            Console.WriteLine("\nFetching Poorly Drawn Lines...");
             var pdl = PDL.FetchLatest().Result;
-
-            Console.WriteLine(pdl.Title);
-            Console.WriteLine(pdl.Href);
-            Console.WriteLine(pdl.Published);
-            Console.WriteLine(pdl.ID);
+            Console.WriteLine(
+                $"{pdl.Id}: {pdl.Title} <{pdl.Link}> @ {pdl.Published}");
         }
 
         static HttpClient NewClient()

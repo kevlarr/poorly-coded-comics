@@ -21,19 +21,20 @@ namespace poorlycoded
     {
         static string url = "http://feeds.feedburner.com/PoorlyDrawnLines?format=xml";
 
-        public static async Task<Processed> FetchLatest()
+        public static async Task<Comic> FetchLatest()
         {
-            var firstItem = new Processed();
+            var res = new Result();
             var settings = new XmlReaderSettings();
             settings.Async = true;
             using (var reader = XmlReader.Create(PDL.url, settings)) {
-                await ProcessXml(reader, firstItem);
+                await ProcessXml(reader, res);
             }
-            return firstItem;
+            return new Comic(res.Id, res.Title, res.Link, res.Published);
         }
 
-        public static async Task ProcessXml(XmlReader r, Processed p)
+        private static async Task ProcessXml(XmlReader r, Result res)
         {
+            // TODO: MSDN shoes ReadToFollowingAsync but not found..?
             r.ReadToFollowing("item");
 
             while (await r.ReadAsync())
@@ -41,22 +42,22 @@ namespace poorlycoded
                 switch (r.LocalName)
                 {
                     case "title":
-                        p.Title = r.ReadInnerXml();
+                        res.Title = r.ReadInnerXml();
                         break;
                     case "pubDate":
                         DateTime dt;
                         if (DateTime.TryParse(r.ReadInnerXml(), out dt))
-                            p.Published = dt;
+                            res.Published = dt;
                         break;
                     case "origLink":
-                        p.Href = new Uri(r.ReadInnerXml());
+                        res.Link = r.ReadInnerXml();
                         break;
                     case "guid":
                         int guid;
                         var rgx = new Regex(@"(?<=p=)[0-9]+");
                         var match = rgx.Match(r.ReadInnerXml());
                         if (int.TryParse(match.Value, out guid))
-                            p.ID = guid;
+                            res.Id = guid;
                         break;
                     // Only need the first (most recent) item
                     case "item":
@@ -65,10 +66,10 @@ namespace poorlycoded
             }
         }
 
-        public class Processed
+        private class Result
         {
-            public int ID { get; set; }
-            public Uri Href { get; set; }
+            public int Id { get; set; }
+            public string Link { get; set; }
             public DateTime Published { get; set; }
             public string Title { get; set; }
         }
