@@ -17,16 +17,16 @@ using System.Xml;
 
 namespace poorlycoded
 {
-    public class PDL
+    public class Pdl
     {
-        static string url = "http://feeds.feedburner.com/PoorlyDrawnLines?format=xml";
+        private static string _url = "http://feeds.feedburner.com/PoorlyDrawnLines?format=xml";
 
         public static async Task<Comic> FetchLatest()
         {
             var res = new Result();
             var settings = new XmlReaderSettings();
             settings.Async = true;
-            using (var reader = XmlReader.Create(PDL.url, settings)) {
+            using (var reader = XmlReader.Create(_url, settings)) {
                 await ProcessXml(reader, res);
             }
             return new Comic(res.Id, res.Title, res.Link, res.Published);

@@ -11,22 +11,39 @@ Sample JSON response:
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
 namespace poorlycoded
 {
-    public class XKCD
+    public class Xkcd
     {
-        static string url = "http://xkcd.com/info.0.json";
+        private static string _url = "http://xkcd.com/info.0.json";
+        private static string[] _headerValues = {"application/json"};
 
-        public static async Task<Comic> FetchLatest(HttpClient c)
+
+        public static async Task<Comic> FetchLatest()
         {
+            var client = NewClient();
             var serializer = new DataContractJsonSerializer(typeof(Result));
-            var streamTask = c.GetStreamAsync(XKCD.url);
-            var res = serializer.ReadObject(await streamTask) as Result;
+            var stream = client.GetStreamAsync(_url);
+            var res = serializer.ReadObject(await stream) as Result;
             return new Comic(res.Id, res.Title, "http://xkcd.com", res.Published);
+        }
+
+        private static HttpClient NewClient()
+        {
+            var client = new HttpClient();
+            var headers = client.DefaultRequestHeaders;
+
+            // While fun to add these, they aren't necessary
+            headers.Add("User-Agent", "Comicbot/1.0");
+            headers.Accept.Clear();
+            foreach (string h in _headerValues)
+                headers.Accept.Add(new MediaTypeWithQualityHeaderValue(h));
+            return client;
         }
 
         [DataContract]
