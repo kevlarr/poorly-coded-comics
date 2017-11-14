@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace poorlycoded
 {
-    public class Xkcd
+    internal class Xkcd
     {
         private static string _url = "http://xkcd.com/info.0.json";
         private static string[] _headerValues = {"application/json"};
@@ -30,7 +30,13 @@ namespace poorlycoded
             var serializer = new DataContractJsonSerializer(typeof(Result));
             var stream = client.GetStreamAsync(_url);
             var res = serializer.ReadObject(await stream) as Result;
-            return new Comic(res.Id, res.Title, "http://xkcd.com", res.Published);
+            return new Comic{
+              Id = res.Id,
+              Link = new Uri("http://xkcd.com"),
+              Published = res.Published,
+              Source = (int)Sources.Xkcd,
+              Title = res.Title,
+            };
         }
 
         private static HttpClient NewClient()

@@ -1,6 +1,8 @@
 ﻿using System;
 namespace poorlycoded
 {
+    enum Sources {Pdl, Xkcd};
+
     class Program
     {
         static void Main(string[] args)

@@ -17,22 +17,22 @@ using System.Xml;
 
 namespace poorlycoded
 {
-    public class Pdl
+    internal class Pdl
     {
         private static string _url = "http://feeds.feedburner.com/PoorlyDrawnLines?format=xml";
 
         public static async Task<Comic> FetchLatest()
         {
-            var res = new Result();
+            var comic = new Comic{ Source = (int)Sources.Pdl };
             var settings = new XmlReaderSettings();
             settings.Async = true;
             using (var reader = XmlReader.Create(_url, settings)) {
-                await ProcessXml(reader, res);
+                await ProcessXml(reader, comic);
             }
-            return new Comic(res.Id, res.Title, res.Link, res.Published);
+            return comic;
         }
 
-        private static async Task ProcessXml(XmlReader r, Result res)
+        private static async Task ProcessXml(XmlReader r, Comic c)
         {
             // TODO: MSDN shoes ReadToFollowingAsync but not found..?
             r.ReadToFollowing("item");
@@ -42,36 +42,28 @@ namespace poorlycoded
                 switch (r.LocalName)
                 {
                     case "title":
-                        res.Title = r.ReadInnerXml();
+                        c.Title = r.ReadInnerXml();
                         break;
                     case "pubDate":
                         DateTime dt;
                         if (DateTime.TryParse(r.ReadInnerXml(), out dt))
-                            res.Published = dt;
+                            c.Published = dt;
                         break;
                     case "origLink":
-                        res.Link = r.ReadInnerXml();
+                        c.Link = new Uri(r.ReadInnerXml());
                         break;
                     case "guid":
                         int guid;
                         var rgx = new Regex(@"(?<=p=)[0-9]+");
                         var match = rgx.Match(r.ReadInnerXml());
                         if (int.TryParse(match.Value, out guid))
-                            res.Id = guid;
+                            c.Id = guid;
                         break;
                     // Only need the first (most recent) item
                     case "item":
                         return;
                 }
             }
-        }
-
-        private class Result
-        {
-            public int Id { get; set; }
-            public string Link { get; set; }
-            public DateTime Published { get; set; }
-            public string Title { get; set; }
         }
     }
 }
