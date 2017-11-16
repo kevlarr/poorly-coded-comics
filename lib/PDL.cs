@@ -26,6 +26,7 @@ namespace poorlycoded
             var comic = new Comic{ Source = (int)Sources.Pdl };
             var settings = new XmlReaderSettings();
             settings.Async = true;
+
             using (var reader = XmlReader.Create(_url, settings)) {
                 await ProcessXml(reader, comic);
             }
@@ -34,7 +35,7 @@ namespace poorlycoded
 
         private static async Task ProcessXml(XmlReader r, Comic c)
         {
-            // TODO: MSDN shoes ReadToFollowingAsync but not found..?
+            // TODO: MSDN shows ReadToFollowingAsync but it's not found..?
             r.ReadToFollowing("item");
 
             while (await r.ReadAsync())

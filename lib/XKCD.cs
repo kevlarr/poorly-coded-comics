@@ -31,11 +31,11 @@ namespace poorlycoded
             var stream = client.GetStreamAsync(_url);
             var res = serializer.ReadObject(await stream) as Result;
             return new Comic{
-              Id = res.Id,
-              Link = new Uri("http://xkcd.com"),
-              Published = res.Published,
-              Source = (int)Sources.Xkcd,
-              Title = res.Title,
+                Id = res.Id,
+                Link = new Uri($"http://xkcd.com/{res.Id}"),
+                Published = res.Published,
+                Source = (int)Sources.Xkcd,
+                Title = res.Title,
             };
         }
 
@@ -47,6 +47,7 @@ namespace poorlycoded
             // While fun to add these, they aren't necessary
             headers.Add("User-Agent", "Comicbot/1.0");
             headers.Accept.Clear();
+
             foreach (string h in _headerValues)
                 headers.Accept.Add(new MediaTypeWithQualityHeaderValue(h));
             return client;
