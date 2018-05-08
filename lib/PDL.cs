@@ -23,7 +23,7 @@ namespace poorlycoded
 
         public static async Task<Comic> FetchLatest()
         {
-            var comic = new Comic{ Source = (int)Sources.Pdl };
+            var comic = new Comic{ Source = (int)Source.Pdl };
             var settings = new XmlReaderSettings();
             settings.Async = true;
 

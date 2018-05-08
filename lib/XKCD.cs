@@ -34,7 +34,7 @@ namespace poorlycoded
                 Id = res.Id,
                 Link = new Uri($"http://xkcd.com/{res.Id}"),
                 Published = res.Published,
-                Source = (int)Sources.Xkcd,
+                Source = (int)Source.Xkcd,
                 Title = res.Title,
             };
         }
